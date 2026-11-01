@@ -1,6 +1,13 @@
 #include "common/ITypes.h"
 #include "skse/PluginAPI.h"
+#include "skse/GameCamera.h"
+#include "skse/GameData.h"
+#include "skse/GameEvents.h"
+#include "skse/GameMenus.h"
+#include "skse/GameReferences.h"
 #include "skse/skse_version.h"
+
+#include "CameraDirector.h"
 
 #include <Windows.h>
 
@@ -9,6 +16,7 @@ namespace
 	constexpr char kPluginName[] = "CinematicConversationCameraLE";
 	PluginHandle g_pluginHandle = kPluginHandle_Invalid;
 	SKSEMessagingInterface* g_messaging = nullptr;
+	SKSETaskInterface* g_tasks = nullptr;
 
 	void Log(const char* a_message)
 	{
@@ -24,7 +32,8 @@ namespace
 		}
 
 		if (a_message->type == SKSEMessagingInterface::kMessage_DataLoaded) {
-			Log("SKSE DataLoaded received; runtime integration can initialize.");
+			CameraDirector::Initialize(g_tasks);
+			Log("SKSE DataLoaded received; dialogue camera initialized.");
 		}
 	}
 }
@@ -55,10 +64,12 @@ extern "C"
 		}
 
 		g_pluginHandle = a_skse->GetPluginHandle();
+		g_tasks = static_cast<SKSETaskInterface*>(a_skse->QueryInterface(kInterface_Task));
 		g_messaging = static_cast<SKSEMessagingInterface*>(
 			a_skse->QueryInterface(kInterface_Messaging));
-		if (!g_messaging || g_messaging->interfaceVersion < SKSEMessagingInterface::kInterfaceVersion) {
-			Log("SKSE messaging interface unavailable or too old.");
+		if (!g_tasks || g_tasks->interfaceVersion < SKSETaskInterface::kInterfaceVersion ||
+			!g_messaging || g_messaging->interfaceVersion < SKSEMessagingInterface::kInterfaceVersion) {
+			Log("SKSE task or messaging interface unavailable or too old.");
 			return false;
 		}
 

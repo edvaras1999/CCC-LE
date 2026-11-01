@@ -17,6 +17,7 @@ endif()
 
 add_library(CinematicConversationCameraLE SHARED
     src/Plugin.cpp
+    src/CameraDirector.cpp
     src/Plugin.def)
 
 target_compile_features(CinematicConversationCameraLE PRIVATE cxx_std_17)

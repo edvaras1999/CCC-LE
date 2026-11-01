@@ -9,9 +9,9 @@ An in-progress backport of Cinematic Conversation Camera for Skyrim Legendary Ed
 
 ## Status
 
-The current build is a plugin loading scaffold. It checks the LE runtime and registers for SKSE's `DataLoaded` message. Camera behavior is not implemented yet.
+The current build checks the LE runtime, watches the dialogue menu, resolves the current dialogue actor, and blends the camera toward an NPC-facing shot with a tighter field of view. It restores the saved camera rotation and field of view when the menu closes.
 
-The first milestone is dialogue detection, player/NPC shot selection, smooth camera movement, and restoring the vanilla camera when dialogue ends. Further CCC features will follow in stages.
+This is the first camera milestone. Speaker-aware reverse shots, scene coverage, and the remaining CCC features will follow in stages. The current camera behavior still needs in-game validation.
 
 ## Build
 

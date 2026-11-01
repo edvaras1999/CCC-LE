@@ -4,9 +4,10 @@ Target runtime: Skyrim LE 1.9.32.0.8 with SKSE 1.7.3 (32-bit).
 
 ## First milestone
 
-1. Load only against the supported LE runtime and receive SKSE's `DataLoaded` message.
-2. Track the dialogue partner from the LE topic manager and dialogue line events.
-3. Drive one camera shot at a time, blend between player and NPC shots, and restore the vanilla camera on dialogue exit.
+1. Load only against the supported LE runtime and receive SKSE's `DataLoaded` message. **Implemented.**
+2. Track dialogue-menu open/close events and resolve the active actor through the LE topic manager handle. **Implemented.**
+3. Blend camera yaw, pitch, and field of view toward an NPC-facing single, then restore the captured camera values on dialogue exit. **Prototype implemented; needs in-game validation.**
+4. Add speaker-aware player/NPC reverse shots after the initial camera driver is verified in-game.
 
 ## Port boundary
 
@@ -18,4 +19,4 @@ Letterbox rendering, subtitle placement, face animation, and third-party integra
 
 For local builds, this folder expects the supplied SKSE 1.7.3 source archive to be extracted to `../skse173/skse_1_07_03`. Configure with a Win32 MSVC generator. GitHub Actions checks out the archived SKSE source at a pinned commit, configures Win32, and uploads the resulting DLL as a workflow artifact.
 
-The initial plugin entry point is only a runtime and lifecycle scaffold; it does not yet alter camera behavior. A green Actions build will certify compilation only; in-game camera behavior still needs a Skyrim LE runtime for validation.
+The GitHub Actions build certifies compilation only. Camera behavior still needs validation in a Skyrim LE runtime, especially its blend timing and interaction with vanilla camera updates.
