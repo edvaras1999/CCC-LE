@@ -35,8 +35,11 @@ namespace
 		}
 
 		if (a_message->type == SKSEMessagingInterface::kMessage_DataLoaded) {
-			CameraDirector::Initialize(g_tasks);
-			Log("SKSE DataLoaded received; dialogue camera initialized.");
+			if (CameraDirector::Initialize(g_tasks)) {
+				Log("SKSE DataLoaded received; dialogue menu frame hook installed.");
+			} else {
+				Log("SKSE DataLoaded received, but dialogue camera initialization failed.");
+			}
 		}
 	}
 }
@@ -85,3 +88,4 @@ extern "C"
 		return true;
 	}
 }
+
