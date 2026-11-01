@@ -1,3 +1,7 @@
+#include "common/IPrefix.h"
+
+#include <string>
+
 #include "CameraDirector.h"
 
 #include "skse/GameCamera.h"

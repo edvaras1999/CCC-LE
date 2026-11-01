@@ -1,4 +1,7 @@
-#include "common/ITypes.h"
+#include "common/IPrefix.h"
+
+#include <string>
+
 #include "skse/PluginAPI.h"
 #include "skse/GameCamera.h"
 #include "skse/GameData.h"
