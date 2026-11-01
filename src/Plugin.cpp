@@ -11,6 +11,7 @@
 #include "skse/skse_version.h"
 
 #include "CameraDirector.h"
+#include "Logger.h"
 
 #include <Windows.h>
 
@@ -19,13 +20,9 @@ namespace
 	constexpr char kPluginName[] = "CinematicConversationCameraLE";
 	PluginHandle g_pluginHandle = kPluginHandle_Invalid;
 	SKSEMessagingInterface* g_messaging = nullptr;
-	SKSETaskInterface* g_tasks = nullptr;
-
 	void Log(const char* a_message)
 	{
-		OutputDebugStringA("[CCC LE] ");
-		OutputDebugStringA(a_message);
-		OutputDebugStringA("\n");
+		Logger::Write(a_message);
 	}
 
 	void OnSKSEMessage(SKSEMessagingInterface::Message* a_message)
@@ -35,7 +32,7 @@ namespace
 		}
 
 		if (a_message->type == SKSEMessagingInterface::kMessage_DataLoaded) {
-			if (CameraDirector::Initialize(g_tasks)) {
+			if (CameraDirector::Initialize()) {
 				Log("SKSE DataLoaded received; dialogue menu frame hook installed.");
 			} else {
 				Log("SKSE DataLoaded received, but dialogue camera initialization failed.");
@@ -54,7 +51,7 @@ extern "C"
 
 		a_info->infoVersion = PluginInfo::kInfoVersion;
 		a_info->name = kPluginName;
-		a_info->version = 1;
+		a_info->version = 2;
 
 		if (a_skse->isEditor || a_skse->runtimeVersion != RUNTIME_VERSION_1_9_32_0) {
 			return false;
@@ -68,14 +65,13 @@ extern "C"
 		if (!a_skse || a_skse->runtimeVersion != RUNTIME_VERSION_1_9_32_0) {
 			return false;
 		}
+		Logger::Initialize();
 
 		g_pluginHandle = a_skse->GetPluginHandle();
-		g_tasks = static_cast<SKSETaskInterface*>(a_skse->QueryInterface(kInterface_Task));
 		g_messaging = static_cast<SKSEMessagingInterface*>(
 			a_skse->QueryInterface(kInterface_Messaging));
-		if (!g_tasks || g_tasks->interfaceVersion < SKSETaskInterface::kInterfaceVersion ||
-			!g_messaging || g_messaging->interfaceVersion < SKSEMessagingInterface::kInterfaceVersion) {
-			Log("SKSE task or messaging interface unavailable or too old.");
+		if (!g_messaging || g_messaging->interfaceVersion < SKSEMessagingInterface::kInterfaceVersion) {
+			Log("SKSE messaging interface unavailable or too old.");
 			return false;
 		}
 

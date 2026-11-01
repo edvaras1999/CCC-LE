@@ -3,6 +3,7 @@
 #include <string>
 
 #include "CameraDirector.h"
+#include "Logger.h"
 
 #include "skse/GameCamera.h"
 #include "skse/GameData.h"
@@ -36,6 +37,7 @@ namespace CameraDirector
 		bool g_dialogueOpen = false;
 		bool g_restoreCamera = false;
 		bool g_haveSnapshot = false;
+		bool g_loggedActorResolved = false;
 		float g_savedWorldFov = 65.0f;
 		float g_savedFirstPersonFov = 65.0f;
 		float g_savedRotZ = 0.0f;
@@ -131,9 +133,15 @@ namespace CameraDirector
 					SaveCameraState();
 					g_dialogueOpen = true;
 					g_restoreCamera = false;
+					g_loggedActorResolved = false;
+					Logger::Write("Dialogue Menu opened; camera state captured.");
 				} else {
 					g_dialogueOpen = false;
+					if (!g_loggedActorResolved) {
+						Logger::Write("Dialogue ended before a dialogue actor could be resolved.");
+					}
 					RestoreCameraState();
+					Logger::Write("Dialogue Menu closed; camera state restored.");
 				}
 				return kEvent_Continue;
 			}
@@ -166,6 +174,10 @@ namespace CameraDirector
 				auto* player = Player();
 				if (!target || !player || target == static_cast<Actor*>(player)) {
 					return;
+				}
+				if (!g_loggedActorResolved) {
+					Logger::Write("Dialogue actor resolved; camera aim updates are active.");
+					g_loggedActorResolved = true;
 				}
 
 				const float dx = target->pos.x - camera->pos.x;
@@ -213,12 +225,17 @@ namespace CameraDirector
 			static_assert(sizeof(void*) == sizeof(UInt32), "Skyrim LE is a 32-bit executable");
 			const UInt32 slotAddress = kDialogueMenuVTableAddress + kDialogueMenuNextFrameSlot * sizeof(void*);
 			auto** slot = reinterpret_cast<void**>(slotAddress);
-			if (!*slot || *slot == reinterpret_cast<void*>(&DialogueMenuNextFrameHook)) {
+			if (*slot == reinterpret_cast<void*>(&DialogueMenuNextFrameHook)) {
+				return g_originalDialogueMenuNextFrame != nullptr;
+			}
+			if (!*slot) {
+				Logger::Write("Dialogue menu vtable slot 5 is empty; hook was not installed.");
 				return false;
 			}
 
 			DWORD oldProtection = 0;
 			if (!VirtualProtect(slot, sizeof(void*), PAGE_EXECUTE_READWRITE, &oldProtection)) {
+				Logger::Write("VirtualProtect failed for the dialogue menu vtable; hook was not installed.");
 				return false;
 			}
 			g_originalDialogueMenuNextFrame = reinterpret_cast<DialogueMenuNextFrameFn>(*slot);
@@ -230,18 +247,17 @@ namespace CameraDirector
 
 	}
 
-	bool Initialize(SKSETaskInterface* a_tasks)
+	bool Initialize()
 	{
-		if (!a_tasks) {
-			return false;
-		}
-
 		auto* menus = MenuManager::GetSingleton();
 		if (!menus || !menus->MenuOpenCloseEventDispatcher()) {
+			Logger::Write("Menu manager unavailable; camera initialization failed.");
 			return false;
 		}
 		menus->MenuOpenCloseEventDispatcher()->AddEventSink(&g_menuListener);
-		return InstallDialogueMenuFrameHook();
+		const bool installed = InstallDialogueMenuFrameHook();
+		Logger::Write(installed ? "Dialogue menu frame hook installed." : "Dialogue menu frame hook installation failed.");
+		return installed;
 	}
 }
 

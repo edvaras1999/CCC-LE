@@ -18,6 +18,7 @@ endif()
 add_library(CinematicConversationCameraLE SHARED
     src/Plugin.cpp
     src/CameraDirector.cpp
+    src/Logger.cpp
     src/Plugin.def)
 
 target_compile_features(CinematicConversationCameraLE PRIVATE cxx_std_17)
@@ -27,5 +28,7 @@ target_include_directories(CinematicConversationCameraLE PRIVATE
     "${SKSE_LE_ROOT}/common")
 target_compile_definitions(CinematicConversationCameraLE PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX)
 target_compile_options(CinematicConversationCameraLE PRIVATE /W4 /EHsc)
+target_link_libraries(CinematicConversationCameraLE PRIVATE Shell32)
 set_target_properties(CinematicConversationCameraLE PROPERTIES
     OUTPUT_NAME "CinematicConversationCamera")
+

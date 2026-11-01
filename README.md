@@ -19,6 +19,11 @@ GitHub Actions builds a Win32 DLL on Windows and uploads it as the `CinematicCon
 
 For a local build, use Visual Studio 2022 with the C++ desktop workload and CMake, then configure for Win32 and set `SKSE_LE_ROOT` to the `src` folder from the SKSE 1.7.3 source archive.
 
+## Log
+
+The plugin writes `CinematicConversationCamera.log` to `Documents/My Games/Skyrim/SKSE`. It records SKSE loading, dialogue hook setup, dialogue menu open/close events, and whether the dialogue actor was resolved. It does not write a line every frame.
+
 ## License
 
 The CCC source is GPL-3.0-or-later, with the permissions listed in `EXCEPTIONS.md` from the upstream repository. This backport will retain the applicable notices as its implementation grows.
+
