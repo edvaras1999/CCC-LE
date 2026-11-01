@@ -31,7 +31,6 @@ namespace CameraDirector
 		constexpr float kBlendRate = 7.0f;
 		constexpr float kPi = 3.14159265358979323846f;
 
-		SKSETaskInterface* g_tasks = nullptr;
 		bool g_dialogueOpen = false;
 		bool g_restoreCamera = false;
 		bool g_haveSnapshot = false;
@@ -184,22 +183,6 @@ namespace CameraDirector
 			}
 		}
 
-		class CameraTick final : public TaskDelegate
-		{
-		public:
-			void Run() override
-			{
-				UpdateCamera();
-				if (g_tasks) {
-					g_tasks->AddTask(new CameraTick());
-				}
-			}
-
-			void Dispose() override
-			{
-				delete this;
-			}
-		};
 	}
 
 	void Initialize(SKSETaskInterface* a_tasks)
@@ -207,11 +190,13 @@ namespace CameraDirector
 		if (!a_tasks || !a_tasks->AddTask) {
 			return;
 		}
-		g_tasks = a_tasks;
+		// SKSE's task queue is drained while holding its queue lock. A task cannot
+		// safely enqueue itself from Run(); doing so can deadlock the game at startup.
+		(void)a_tasks;
 
 		if (auto* menus = MenuManager::GetSingleton()) {
 			menus->MenuOpenCloseEventDispatcher()->AddEventSink(&g_menuListener);
 		}
-		g_tasks->AddTask(new CameraTick());
 	}
 }
+
