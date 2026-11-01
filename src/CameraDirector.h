@@ -4,5 +4,6 @@
 
 namespace CameraDirector
 {
-	void Initialize(SKSETaskInterface* a_tasks);
+	bool Initialize(SKSETaskInterface* a_tasks);
 }
+
