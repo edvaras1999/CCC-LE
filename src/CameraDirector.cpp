@@ -39,7 +39,7 @@ namespace CameraDirector
 		float g_savedFirstPersonFov = 65.0f;
 		float g_savedRotZ = 0.0f;
 		float g_savedRotX = 0.0f;
-		ULONGLONG g_lastTick = 0;
+		DWORD g_lastTick = 0;
 
 		[[nodiscard]] float WrapAngle(float a_angle)
 		{
@@ -130,7 +130,7 @@ namespace CameraDirector
 				return;
 			}
 
-			const ULONGLONG now = GetTickCount64();
+			const DWORD now = GetTickCount();
 			float delta = g_lastTick == 0 ? (1.0f / 60.0f) : static_cast<float>(now - g_lastTick) / 1000.0f;
 			g_lastTick = now;
 			delta = std::clamp(delta, 0.0f, 0.05f);

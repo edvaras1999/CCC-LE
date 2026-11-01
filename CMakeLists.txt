@@ -26,6 +26,6 @@ target_include_directories(CinematicConversationCameraLE PRIVATE
     "${SKSE_LE_ROOT}/skse"
     "${SKSE_LE_ROOT}/common")
 target_compile_definitions(CinematicConversationCameraLE PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX)
-target_compile_options(CinematicConversationCameraLE PRIVATE /W4 /permissive- /EHsc)
+target_compile_options(CinematicConversationCameraLE PRIVATE /W4 /EHsc)
 set_target_properties(CinematicConversationCameraLE PROPERTIES
     OUTPUT_NAME "CinematicConversationCamera")
