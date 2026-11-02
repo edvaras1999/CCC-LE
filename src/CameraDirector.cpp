@@ -184,8 +184,7 @@ namespace CameraDirector
 					g_loggedActorResolved = true;
 				}
 
-				const bool firstPerson = state == PlayerCamera::kCameraState_FirstPerson;
-				const UInt32 shotCount = firstPerson ? 2 : 3;
+				const UInt32 shotCount = 2;
 				if (!g_haveShotClock) {
 					g_haveShotClock = true;
 					g_lastShotChange = now;
@@ -194,20 +193,13 @@ namespace CameraDirector
 				} else if (now - g_lastShotChange >= kShotDurationMs) {
 					g_shotIndex = (g_shotIndex + 1) % shotCount;
 					g_lastShotChange = now;
-					Logger::Write(g_shotIndex == 0 ? "Camera shot: NPC close-up." :
-						g_shotIndex == 1 ? "Camera shot: NPC medium shot." : "Camera shot: two-shot.");
+					Logger::Write(g_shotIndex == 0 ? "Camera shot: NPC close-up." : "Camera shot: NPC medium shot.");
 				}
 
-				float focusX = target->pos.x;
-				float focusY = target->pos.y;
-				float focusZ = target->pos.z + (g_shotIndex == 1 ? 100.0f : 82.0f);
-				float targetFov = g_shotIndex == 1 ? 68.0f : 55.0f;
-				if (g_shotIndex == 2) {
-					focusX = (target->pos.x + player->pos.x) * 0.5f;
-					focusY = (target->pos.y + player->pos.y) * 0.5f;
-					focusZ = (target->pos.z + player->pos.z) * 0.5f + 82.0f;
-					targetFov = 74.0f;
-				}
+				const float focusX = target->pos.x;
+				const float focusY = target->pos.y;
+				const float focusZ = target->pos.z + (g_shotIndex == 1 ? 100.0f : 82.0f);
+				const float targetFov = g_shotIndex == 1 ? 68.0f : 55.0f;
 
 				const float dx = focusX - camera->pos.x;
 				const float dy = focusY - camera->pos.y;
