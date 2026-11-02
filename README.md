@@ -9,9 +9,9 @@ An in-progress backport of Cinematic Conversation Camera for Skyrim Legendary Ed
 
 ## Status
 
-The current build checks the LE runtime, watches the dialogue menu, resolves the current dialogue actor, and smoothly keeps one stable NPC-facing view with a tighter field of view. Timed shot changes are disabled while validating the ACC-style base behavior. The saved camera rotation and field of view are restored when the menu closes.
+The current build checks the LE runtime, watches the dialogue menu, resolves and retains the dialogue NPC, and uses Skyrim's camera-target function to switch between NPC-facing and player-facing views when the NPC's speech state changes in third person. First person keeps the NPC lock. The field of view transitions smoothly, and the previous camera target, rotation, and field of view are restored when dialogue closes. This speaker-switching step still needs in-game validation.
 
-This is the first camera milestone. Speaker-aware reverse shots, scene coverage, and the remaining CCC features will follow in stages. The current camera behavior still needs in-game validation.
+This is the first ACC-style camera milestone. Distance-based framing, configurable POV/speed, head tracking, and later CCC scene coverage will follow in stages.
 
 ## Build
 
@@ -25,4 +25,4 @@ The plugin writes `CinematicConversationCamera.log` to `Documents/My Games/Skyri
 
 ## License
 
-The CCC source is GPL-3.0-or-later, with the permissions listed in `EXCEPTIONS.md` from the upstream repository. This backport will retain the applicable notices as its implementation grows.
+The CCC source is GPL-3.0-or-later, with the permissions listed in `EXCEPTIONS.md` from the upstream repository. Alternate Conversation Camera LE by Felisky and the upstream ACC source by NasGorTelorCeplok were used as behavioral and technical references. This backport will retain applicable notices as its implementation grows.
