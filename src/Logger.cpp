@@ -76,4 +76,3 @@ namespace Logger
 		ReleaseSRWLockExclusive(&g_logLock);
 	}
 }
-

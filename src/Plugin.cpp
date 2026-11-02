@@ -84,4 +84,3 @@ extern "C"
 		return true;
 	}
 }
-

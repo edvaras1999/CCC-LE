@@ -4,4 +4,3 @@ namespace CameraDirector
 {
 	bool Initialize();
 }
-

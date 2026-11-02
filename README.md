@@ -9,7 +9,7 @@ An in-progress backport of Cinematic Conversation Camera for Skyrim Legendary Ed
 
 ## Status
 
-The current build checks the LE runtime, watches the dialogue menu, resolves the current dialogue actor, and blends the camera toward an NPC-facing shot with a tighter field of view. It restores the saved camera rotation and field of view when the menu closes.
+The current build checks the LE runtime, watches the dialogue menu, resolves the current dialogue actor, and blends through an NPC close-up, an NPC medium shot, and a two-shot in third person. First person alternates between NPC close-up and medium shots. Each shot holds for ten seconds, and the saved camera rotation and field of view are restored when the menu closes.
 
 This is the first camera milestone. Speaker-aware reverse shots, scene coverage, and the remaining CCC features will follow in stages. The current camera behavior still needs in-game validation.
 
@@ -26,4 +26,3 @@ The plugin writes `CinematicConversationCamera.log` to `Documents/My Games/Skyri
 ## License
 
 The CCC source is GPL-3.0-or-later, with the permissions listed in `EXCEPTIONS.md` from the upstream repository. This backport will retain the applicable notices as its implementation grows.
-

@@ -31,4 +31,3 @@ target_compile_options(CinematicConversationCameraLE PRIVATE /W4 /EHsc)
 target_link_libraries(CinematicConversationCameraLE PRIVATE Shell32)
 set_target_properties(CinematicConversationCameraLE PROPERTIES
     OUTPUT_NAME "CinematicConversationCamera")
-
