@@ -9,7 +9,7 @@ An in-progress backport of Cinematic Conversation Camera for Skyrim Legendary Ed
 
 ## Status
 
-The current build checks the LE runtime, watches the dialogue menu, resolves the current dialogue actor, and alternates between an NPC close-up and a medium shot in first and third person. Each shot holds for ten seconds, and the saved camera rotation and field of view are restored when the menu closes.
+The current build checks the LE runtime, watches the dialogue menu, resolves the current dialogue actor, and smoothly keeps one stable NPC-facing view with a tighter field of view. Timed shot changes are disabled while validating the ACC-style base behavior. The saved camera rotation and field of view are restored when the menu closes.
 
 This is the first camera milestone. Speaker-aware reverse shots, scene coverage, and the remaining CCC features will follow in stages. The current camera behavior still needs in-game validation.
 

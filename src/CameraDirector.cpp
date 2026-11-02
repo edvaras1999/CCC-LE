@@ -29,7 +29,8 @@ namespace CameraDirector
 		constexpr UInt32 kLookupRefByHandleAddress = 0x004A9180;
 		constexpr UInt32 kDialogueMenuVTableAddress = 0x010E4C9C;
 		constexpr UInt32 kDialogueMenuNextFrameSlot = 5;
-		constexpr DWORD kShotDurationMs = 10000;
+		constexpr float kTargetFov = 55.0f;
+		constexpr float kAimHeight = 82.0f;
 		constexpr float kBlendRate = 7.0f;
 		constexpr float kPi = 3.14159265358979323846f;
 
@@ -42,9 +43,7 @@ namespace CameraDirector
 		float g_savedRotZ = 0.0f;
 		float g_savedRotX = 0.0f;
 		DWORD g_lastTick = 0;
-		DWORD g_lastShotChange = 0;
-		UInt32 g_shotIndex = 0;
-		bool g_haveShotClock = false;
+		bool g_loggedCameraActive = false;
 		using DialogueMenuNextFrameFn = void(__thiscall*)(void*, UInt32, UInt32);
 		DialogueMenuNextFrameFn g_originalDialogueMenuNextFrame = nullptr;
 
@@ -136,8 +135,7 @@ namespace CameraDirector
 					g_dialogueOpen = true;
 					g_restoreCamera = false;
 					g_loggedActorResolved = false;
-					g_haveShotClock = false;
-					g_shotIndex = 0;
+					g_loggedCameraActive = false;
 					Logger::Write("Dialogue Menu opened; camera state captured.");
 				} else {
 					g_dialogueOpen = false;
@@ -184,22 +182,14 @@ namespace CameraDirector
 					g_loggedActorResolved = true;
 				}
 
-				const UInt32 shotCount = 2;
-				if (!g_haveShotClock) {
-					g_haveShotClock = true;
-					g_lastShotChange = now;
-					g_shotIndex = 0;
-					Logger::Write("Camera shot: NPC close-up.");
-				} else if (now - g_lastShotChange >= kShotDurationMs) {
-					g_shotIndex = (g_shotIndex + 1) % shotCount;
-					g_lastShotChange = now;
-					Logger::Write(g_shotIndex == 0 ? "Camera shot: NPC close-up." : "Camera shot: NPC medium shot.");
+				if (!g_loggedCameraActive) {
+					Logger::Write("ACC-style stable NPC focus active; timed shot changes are disabled.");
+					g_loggedCameraActive = true;
 				}
 
 				const float focusX = target->pos.x;
 				const float focusY = target->pos.y;
-				const float focusZ = target->pos.z + (g_shotIndex == 1 ? 100.0f : 82.0f);
-				const float targetFov = g_shotIndex == 1 ? 68.0f : 55.0f;
+				const float focusZ = target->pos.z + kAimHeight;
 
 				const float dx = focusX - camera->pos.x;
 				const float dy = focusY - camera->pos.y;
@@ -213,8 +203,8 @@ namespace CameraDirector
 				const float desiredX = std::atan2(dz, horizontal);
 				camera->rotZ = BlendAngle(camera->rotZ, desiredZ, blend);
 				camera->rotX = BlendAngle(camera->rotX, desiredX, blend);
-				camera->worldFOV += (targetFov - camera->worldFOV) * blend;
-				camera->firstPersonFOV += (targetFov - camera->firstPersonFOV) * blend;
+				camera->worldFOV += (kTargetFov - camera->worldFOV) * blend;
+				camera->firstPersonFOV += (kTargetFov - camera->firstPersonFOV) * blend;
 				return;
 			}
 
